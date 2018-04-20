@@ -24,19 +24,19 @@ public class CrawlerController extends BaseController{
     @Resource
     private JobMsgMapper jobMsgMapper;
 
-    @RequestMapping("/test")
     /**
      * 测试服务器是否正常
      */
+    @RequestMapping("/test")
     public Map test(){
         System.out.println("test success!");
         return buildResult(CODE_SUCCESS, "test success!");
     }
 
-    @RequestMapping("/start")
     /**
      * 监控开始,初始化日报记录，返回日报id
      */
+    @RequestMapping("/start")
     public Map start(String appkey, String secret, Long timestamp, String cpu, String ram, Integer crawlerCount, Integer saveCount, Integer interval) {
         System.out.println("收到监控开始消息");
         //验证密钥
@@ -62,10 +62,10 @@ public class CrawlerController extends BaseController{
         return buildResult("dailyId", dailyId);
     }
 
-    @RequestMapping("/sendMessage")
     /**
      * 保存从爬虫端发送过来的爬虫状态信息
      */
+    @RequestMapping("/sendMessage")
     public Map sendMessage(String appkey, String secret, Long timestamp, String cpu, String ram, Integer crawlerCount, Integer saveCount, Integer dailyId) {
         System.out.println("收到爬虫状态消息");
         //验证密钥
@@ -97,10 +97,10 @@ public class CrawlerController extends BaseController{
     }
 
 
-    @RequestMapping("/sendDaily")
     /**
      * 保存日报信息
      */
+    @RequestMapping("/sendDaily")
     public Map sendDaily(String appkey, String secret, Long timestamp, Integer totalCount, Long totalSold, Integer dailyId){
         System.out.println("收到日报消息");
         //验证密钥
@@ -129,6 +129,5 @@ public class CrawlerController extends BaseController{
         jobDailyMapper.updateByPrimaryKey(jobDaily);
         return buildResult(CODE_SUCCESS, "ok");
     }
-
 
 }

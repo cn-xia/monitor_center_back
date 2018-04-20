@@ -14,4 +14,26 @@
       limit 1
     </select>
 
+    <select id="getJobMsg" resultType="Map">
+      select
+        ji.job_id jobId,
+        ji.job_name jobName,
+        jm.crawler_count crawlerCount,
+        jm.inc_crawler_count incCrawlerCount,
+        jm.save_count saveCount,
+        jm.inc_save_count incSaveCount,
+        jm.cpu cpu,
+        jm.ram ram,
+        date_format(jm.monitor_time, "%Y-%m-%d %H:%i:%s") monitorTime
+      from
+        job_info ji
+      left join
+        job_msg jm
+        on ji.job_id=jm.job_id
+      where
+        ji.job_id = 1
+        and jm.daily_id=(select max(jd.id) from job_daily jd where jd.job_id=1)
+      order by jm.monitor_time desc
+    </select>
+
 </mapper>
