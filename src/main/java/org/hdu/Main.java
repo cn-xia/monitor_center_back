@@ -5,7 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-@MapperScan("org.hdu")
+@MapperScan("org.hdu.back.Mapper")
 public class Main {
 
 	public static void main(String[] args) {

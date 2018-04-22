@@ -50,7 +50,7 @@
     <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into web_page_detail
+    replace into web_page_detail
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="url != null" >
         url,

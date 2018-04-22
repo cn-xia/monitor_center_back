@@ -26,9 +26,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-@Component
 public class MonitorRequester {
-	
+/*	
 	private static String server;          //监控中心服务器地址
 	
 	private static String appkey;		   //每个爬虫任务分配的appkey
@@ -39,36 +38,27 @@ public class MonitorRequester {
 	
 	private static final Logger logger = LoggerFactory.getLogger(MonitorRequester.class);
 	
-	@Resource
-	private JobInfoMapper jobInfoMapper;
-	
-	@Resource
-	private JobDailyMapper jobDailyMapper;
-	
-	@Resource
-	private JobMsgMapper jobMsgMapper;
-	
 	@Value("${crawler.monitor.url}")
     public void setServer(String url) { //给静态变量赋值
-        this.server = url;
+        MonitorRequester.server = url;
     } 
 	
 	@Value("${crawler.monitor.appkey}")
 	public void setAppkey(String appkey){
-		this.appkey = appkey;
+		MonitorRequester.appkey = appkey;
 	}
 	
 	@Value("${crawler.monitor.interval}")
 	public void setInterval(int interval){
-		this.interval = interval;
+		MonitorRequester.interval = interval;
 	}
 	
-	/**
+	*//**
 	 * 监控开始
 	 * 参数拼接
 	 * @param monitorParam
 	 * @return
-	 */
+	 *//*
 	private static String getStartParamString(MonitorParam monitorParam){
 		String crawlerCount = monitorParam.getCrawlerCount()+"";
 		String saveCount = monitorParam.getSaveCount()+"";
@@ -85,11 +75,11 @@ public class MonitorRequester {
 		return param;
 	}
 	
-	/**
+	*//**
 	 * 状态监控
 	 * 生成密钥、拼接请求参数
 	 * @return
-	 */
+	 *//*
 	private static String getCrawlerParamString(MonitorParam monitorParam){
 		long crawlerCount = monitorParam.getCrawlerCount();
 		long saveCount = monitorParam.getSaveCount();
@@ -106,11 +96,11 @@ public class MonitorRequester {
 		return param;
 	}
 	
-	/**
+	*//**
 	 * 日报生成
 	 * 生成密钥、拼接求参数
 	 * @return
-	 */
+	 *//*
 	private static String getDailyParamString(MonitorParam monitorParam){
 		String totalCount = monitorParam.getTotalCount()+"";
 		String totalSold = monitorParam.getTotalSold()+"";
@@ -125,11 +115,11 @@ public class MonitorRequester {
 		return param;
 	}
 	
-	/**
+	*//**
 	 * 错误日志参数
 	 * @param monitorParam
 	 * @return
-	 */
+	 *//*
 	private static String getExceptionParamString(MonitorParam monitorParam){
 		String exception = monitorParam.getException();
 		//得到当前时间戳
@@ -145,7 +135,7 @@ public class MonitorRequester {
 	
 	//监控开始
 	public String start(MonitorParam monitorParam){
-		/*String url = server+"/crawler/start";
+		String url = server+"/crawler/start";
 		String param = getStartParamString(monitorParam);
 		String result = sendPost(param,url);
 		try { 
@@ -157,9 +147,9 @@ public class MonitorRequester {
 			dailyId = -1;
 			result = -1+"";
 			logger.error("dailyId get error:",e);
-		}*/ 
+		}
 		//获取任务id
-        JobInfo jobInfo = jobInfoMapper.selectByAppkey(appkey);
+        JobInfo jobInfo =jobInfoMapper.selectByAppkey(appkey);
         int jobId = jobInfo.getJobId();
         //生成日报的初始记录
         JobDaily jobDaily = new JobDaily();
@@ -167,7 +157,7 @@ public class MonitorRequester {
         jobDaily.setStartTime(new Date());
         jobDaily.setJobInterval(interval);
         jobDailyMapper.insertSelective(jobDaily);
-        int dailyId = jobDaily.getId();
+        dailyId = jobDaily.getId();
         //生成爬虫状态信息
         int crawlerCount = (int)monitorParam.getCrawlerCount();
 		int saveCount = (int)monitorParam.getSaveCount();
@@ -181,9 +171,9 @@ public class MonitorRequester {
 	
 	//发送爬虫状态信息
 	public String sendMessage(MonitorParam monitorParam){
-		/*String url = server+"/crawler/sendMessage";
+		String url = server+"/crawler/sendMessage";
 		String param = getCrawlerParamString(monitorParam);
-		return sendPost(param,url);*/
+		return sendPost(param,url);
 		if(dailyId == -1){
         	return "任务启动失败，未生成dailyId";
         }
@@ -214,9 +204,9 @@ public class MonitorRequester {
 	}
 	//发送日报信息
 	public String sendDaily(MonitorParam monitorParam){
-		/*String url = server+"/crawler/sendDaily";
+		String url = server+"/crawler/sendDaily";
 		String param = getDailyParamString(monitorParam);
-		return sendPost(param,url);*/
+		return sendPost(param,url);
 		if(dailyId == -1){
         	return "任务启动失败，未生成dailyId";
         }
@@ -250,7 +240,7 @@ public class MonitorRequester {
 		return sendPost(param,url);
 	}
 	
-	/**
+	*//**
      * 向URL发送post请求
      * 
      * @param url
@@ -258,7 +248,7 @@ public class MonitorRequester {
      * @param param
      *            请求参数， name1=value1&name2=value2
      * @return result 响应结果
-     */
+     *//*
     private static String sendPost(String param,String url) {
     	logger.info(url+"-------------"+param);
         PrintWriter out = null;
@@ -269,7 +259,7 @@ public class MonitorRequester {
             // 打开和URL之间的连接
             URLConnection conn = realUrl.openConnection();
             // 设置通用的请求属性
-            conn.setRequestProperty("accept", "*/*");
+            conn.setRequestProperty("accept", "*");
             conn.setRequestProperty("connection", "Keep-Alive");
             // 发送POST请求必须设置如下两行
             conn.setDoOutput(true);
@@ -333,5 +323,5 @@ public class MonitorRequester {
 	    	 logger.error("monitorRequester md5 error"+e);
 	         return null;
 	     }
-    }
+    }*/
 }

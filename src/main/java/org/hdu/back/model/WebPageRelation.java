@@ -12,8 +12,18 @@ public class WebPageRelation {
     private Date crawlTime;
 
     private Date updateTime;
+    
+    public WebPageRelation() {
+	}
 
-    public Long getId() {
+    public WebPageRelation(String url, String srcUrl, Date crawlTime) {
+		super();
+		this.url = url;
+		this.srcUrl = srcUrl;
+		this.crawlTime = crawlTime;
+	}
+
+	public Long getId() {
         return id;
     }
 

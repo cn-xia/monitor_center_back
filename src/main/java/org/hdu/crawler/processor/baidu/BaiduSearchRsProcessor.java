@@ -6,13 +6,15 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-
 import org.hdu.back.mapper.WebPageDetailMapper;
+import org.hdu.back.mapper.WebPageRelationMapper;
 import org.hdu.back.mapper.WebPageResourceMapper;
 import org.hdu.back.model.WebPageDetail;
+import org.hdu.back.model.WebPageRelation;
 import org.hdu.back.model.WebPageResource;
 import org.hdu.crawler.crawler.DatumGenerator;
 import org.hdu.crawler.crawler.HduCrawler;
@@ -36,13 +38,16 @@ public class BaiduSearchRsProcessor implements Processor{
 	private WebPageDetailMapper webPageDetailMapper;
 	@Resource
 	private WebPageResourceMapper webPageResourceMapper;
+	@Resource
+	private WebPageRelationMapper webPageRelationMapper;
 
     @Override
     public void process(Page page, CrawlDatums next) {
+		MonitorExecute.counter.getAndIncrement();
         //System.out.println(page.getResponse().getRealUrl());
     	String realUrl = page.getResponse().getRealUrl().toString();
     	String domain = page.getResponse().getRealUrl().getHost();
-		if(!HduCrawler.domainList.isEmpty()){ //限制域名
+		if(HduCrawler.domainList != null){ //限制域名
 			switch (HduCrawler.limitType) {
 			case "init": //限初始
 				
@@ -66,7 +71,7 @@ public class BaiduSearchRsProcessor implements Processor{
         if(realUrl.contains("http://www.baidu.com/s")){ //过滤再次链接到百度搜索的网页
 			return;
 		}
-		if(page.select("title").isEmpty()){
+		if(page.getHtml()==null || page.select("title").isEmpty()){
         	return;
 		}
 		parseWebPageDetail(page);
@@ -90,8 +95,8 @@ public class BaiduSearchRsProcessor implements Processor{
 			webPageDetail.setDomain(page.getResponse().getRealUrl().getHost());
 			//标题
 			webPageDetail.setTitle(title);
-			//源
-			if(page.select("#ne_article_source") != null){ //文章来源
+			//文章来源
+			if(!page.select("#ne_article_source").isEmpty()){ 
 				String src = page.select("#ne_article_source").first().text();
 				webPageDetail.setSrc(src);
 			}
@@ -182,7 +187,6 @@ public class BaiduSearchRsProcessor implements Processor{
 			//爬取时间
 			webPageDetail.setCrawlTime(new Date());
 			webPageDetailMapper.insertSelective(webPageDetail);
-			MonitorExecute.counter.getAndIncrement();
 			MonitorExecute.saveCounter.getAndIncrement();
 		}
 	}
@@ -293,14 +297,25 @@ public class BaiduSearchRsProcessor implements Processor{
 	 */
 	private void parseHref(Page page, CrawlDatums next){
 		Elements as = page.select("a");
+		if(as.isEmpty()){
+			return;
+		}
+		List<WebPageRelation> relationLs = new ArrayList<>();
 		for (Element a : as) {
 			if (a.hasAttr("href")) {
 				String href = a.attr("abs:href");//获取超链接
 				String title = a.text();
 				if(href.startsWith("http") && title.contains(page.meta("keyword"))) { //过滤与关键字无关的超链接
-					next.add(datumGenerator.generateBaiduSearchRs(href, page.meta("keyword"), page.getResponse().getRealUrl().toString()));
+					String srcUrl = page.getResponse().getRealUrl().toString();
+					WebPageRelation webPageRelation = new WebPageRelation(href, srcUrl, new Date());
+					relationLs.add(webPageRelation);
+					next.add(datumGenerator.generateBaiduSearchRs(href, page.meta("keyword"), srcUrl));
 				}
 			}
+		}
+		//插入数据库
+		if(!relationLs.isEmpty()){
+			webPageRelationMapper.batchInsert(relationLs);
 		}
 	}
 }

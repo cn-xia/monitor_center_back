@@ -70,6 +70,9 @@ public class WebController extends BaseController{
     @RequestMapping("/startSubCrawl")
     public Map startSubCrawl(MultipartFile subFile, final Integer depth, final Integer count, MultipartFile domainFile, final String limitType){
         System.out.println("收到主题爬虫请求");
+        if(HduCrawler.isStart){
+        	return buildResult(CODE_BUSINESS_ERROR, "爬虫已启动，不能再次启动，请耐心等待爬虫完成");
+        }
     	if(StringUtils.isEmpty(subFile)){
     		return buildResult(CODE_BUSINESS_ERROR, "请选择主题文件");
     	}
@@ -102,21 +105,18 @@ public class WebController extends BaseController{
 				hduCrawler.start(keywordList, depth, count, domainList, limitType);
 			}
 		}).start();
+    	HduCrawler.isStart = true; //标记爬虫已启动
     	return buildResult(CODE_SUCCESS, "启动爬虫成功");
     }
     
     /**
-     * 根据前端输入的主题信息，启动爬虫任务
-     * @param subFile 主题文件
-     * @param depth 层数
-     * @param count 总量
-     * @param domainFile 域名文件
-     * @param limitType init仅限初始 all限全部
+     * 停止爬虫
      * @return
      */
-    @RequestMapping("/startSubCrawl")
+    @RequestMapping("/stopSubCrawl")
     public Map stopSubCrawl(){
     	hduCrawler.stop();
+    	HduCrawler.isStart = false; //标记爬虫未启动
     	return buildResult(CODE_SUCCESS, "停止爬虫成功");
     }
 

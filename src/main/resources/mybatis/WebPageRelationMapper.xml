@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.hdu.back.mapper.WebPageRelationMapper" >
+  
+  <update id="batchInsert">
+  	replace into
+  		web_page_relation (url, src_url, crawl_time, update_time)
+  	values
+  		<foreach collection="relationLs" item="item" separator=",">
+	  		(#{item.url,jdbcType=VARCHAR}, #{item.srcUrl,jdbcType=VARCHAR}, #{item.crawlTime,jdbcType=TIMESTAMP}, 
+	      		#{item.updateTime,jdbcType=TIMESTAMP})
+  		</foreach>
+  </update>
+  
+</mapper>

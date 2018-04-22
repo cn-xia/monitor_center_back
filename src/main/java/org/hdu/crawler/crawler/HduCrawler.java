@@ -56,6 +56,8 @@ public class HduCrawler extends BreadthCrawler implements ApplicationContextAwar
 	public static int count = -1;
 	public static List<String> domainList = null;
 	public static String limitType = null;
+	/** 是否已启动爬虫 */
+	public static boolean isStart = false;
 	
 	public HduCrawler(@Value("${crawler.webcollector.crawlPath}") String crawlPath, @Value("${crawler.webcollector.autoParse}") boolean autoParse) {
 		super(crawlPath, autoParse);
@@ -73,7 +75,7 @@ public class HduCrawler extends BreadthCrawler implements ApplicationContextAwar
 		HttpResponse response = requester.getResponse(datum);
         Page page = new Page(datum, response);
         visitor.visit(page, next);
-        if(HduCrawler.count!=-1 && MonitorExecute.counter.get()>HduCrawler.count){ //数量达到上限则停止爬虫
+        if(HduCrawler.count!=-1 && MonitorExecute.saveCounter.get()>HduCrawler.count){ //数量达到上限则停止爬虫
         	stop();
         }
 	}
@@ -106,6 +108,9 @@ public class HduCrawler extends BreadthCrawler implements ApplicationContextAwar
 		}
 		logger.info("request end");
         notifyEndCrawler();
+        HduCrawler.isStart = true;
+        logger.info("爬取总量：" + MonitorExecute.counter.get());
+		logger.info("入库总量：" + MonitorExecute.saveCounter.get());
         logger.info("crawler end" );
 		System.out.println("爬取总时间:" + (System.currentTimeMillis()-startTime)/1000 + "秒");
 	}
