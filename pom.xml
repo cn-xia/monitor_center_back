@@ -6,7 +6,7 @@
 	<groupId>org.hdu</groupId>
 	<artifactId>monitor_center_back</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 
 	<name>monitor_center_back</name>
 	<description>monitor center back for crawler</description>
@@ -19,9 +19,10 @@
 	</parent>
 
 	<properties>
+		<jdk.version>1.8</jdk.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<java.version>1.8</java.version>
+	  	<webcollector.version>2.32</webcollector.version>
+	  	<guava.version>20.0</guava.version>
 	</properties>
 
 	<dependencies>
@@ -70,6 +71,29 @@
 			<artifactId>druid</artifactId>
 			<version>1.1.1</version>
 		</dependency>
+		
+		<!-- crawler -->
+		<dependency>
+			<groupId>cn.edu.hfut.dmic.webcollector</groupId>
+			<artifactId>WebCollector</artifactId>
+			<version>${webcollector.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-log4j12</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+		    <groupId>com.google.guava</groupId>
+		    <artifactId>guava</artifactId>
+		    <version>${guava.version}</version>
+		</dependency>
+		<dependency>
+		  <groupId>org.codehaus.jackson</groupId>
+		  <artifactId>com.springsource.org.codehaus.jackson.mapper</artifactId>
+		  <version>1.4.3</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -79,14 +103,11 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.3</version>
-				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
-					<encoding>UTF-8</encoding>
-				</configuration>
+			   <artifactId>maven-compiler-plugin</artifactId>
+			   <configuration>
+			      <source>1.8</source>
+			      <target>1.8</target>
+			   </configuration>
 			</plugin>
 		</plugins>
 	</build>

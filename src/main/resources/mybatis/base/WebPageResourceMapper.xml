@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.hdu.back.mapper.WebPageResourceMapper" >
+  <resultMap id="BaseResultMap" type="org.hdu.back.model.WebPageResource" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="url" property="url" jdbcType="VARCHAR" />
+    <result column="resource_type" property="resourceType" jdbcType="SMALLINT" />
+    <result column="crawl_time" property="crawlTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="org.hdu.back.model.WebPageResource" extends="BaseResultMap" >
+    <result column="resource_url" property="resourceUrl" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, url, resource_type, crawl_time, update_time
+  </sql>
+  <sql id="Blob_Column_List" >
+    resource_url
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from web_page_resource
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from web_page_resource
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="org.hdu.back.model.WebPageResource" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into web_page_resource (url, resource_type, crawl_time, 
+      update_time, resource_url)
+    values (#{url,jdbcType=VARCHAR}, #{resourceType,jdbcType=SMALLINT}, #{crawlTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{resourceUrl,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="org.hdu.back.model.WebPageResource" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into web_page_resource
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="url != null" >
+        url,
+      </if>
+      <if test="resourceType != null" >
+        resource_type,
+      </if>
+      <if test="crawlTime != null" >
+        crawl_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="resourceUrl != null" >
+        resource_url,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="url != null" >
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="resourceType != null" >
+        #{resourceType,jdbcType=SMALLINT},
+      </if>
+      <if test="crawlTime != null" >
+        #{crawlTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="resourceUrl != null" >
+        #{resourceUrl,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="org.hdu.back.model.WebPageResource" >
+    update web_page_resource
+    <set >
+      <if test="url != null" >
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="resourceType != null" >
+        resource_type = #{resourceType,jdbcType=SMALLINT},
+      </if>
+      <if test="crawlTime != null" >
+        crawl_time = #{crawlTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="resourceUrl != null" >
+        resource_url = #{resourceUrl,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="org.hdu.back.model.WebPageResource" >
+    update web_page_resource
+    set url = #{url,jdbcType=VARCHAR},
+      resource_type = #{resourceType,jdbcType=SMALLINT},
+      crawl_time = #{crawlTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      resource_url = #{resourceUrl,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.hdu.back.model.WebPageResource" >
+    update web_page_resource
+    set url = #{url,jdbcType=VARCHAR},
+      resource_type = #{resourceType,jdbcType=SMALLINT},
+      crawl_time = #{crawlTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

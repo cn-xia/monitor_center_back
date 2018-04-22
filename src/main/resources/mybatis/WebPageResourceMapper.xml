@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.hdu.back.mapper.WebPageResourceMapper" >
+  
+  <update id="batchInsert">
+  	replace into 
+  		web_page_resource (url, resource_type, crawl_time, update_time, resource_url)
+  	values
+  		<foreach collection="resourceLs" item="item" separator=",">
+  			(#{item.url,jdbcType=VARCHAR}, #{item.resourceType,jdbcType=SMALLINT}, #{item.crawlTime,jdbcType=TIMESTAMP}, 
+      			#{item.updateTime,jdbcType=TIMESTAMP}, #{item.resourceUrl,jdbcType=LONGVARCHAR})
+  		</foreach>
+  </update>
+  
+</mapper>

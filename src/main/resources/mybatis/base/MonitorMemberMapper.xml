@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="org.hdu.mapper.MonitorMemberMapper" >
-  <resultMap id="BaseResultMap" type="org.hdu.model.MonitorMember" >
+<mapper namespace="org.hdu.back.mapper.MonitorMemberMapper" >
+  <resultMap id="BaseResultMap" type="org.hdu.back.model.MonitorMember" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="email_addr" property="emailAddr" jdbcType="VARCHAR" />
     <result column="name" property="name" jdbcType="VARCHAR" />
@@ -20,7 +20,7 @@
     delete from monitor_member
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="org.hdu.model.MonitorMember" >
+  <insert id="insert" parameterType="org.hdu.back.model.MonitorMember" >
     <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
       SELECT LAST_INSERT_ID()
     </selectKey>
@@ -29,7 +29,7 @@
     values (#{emailAddr,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="org.hdu.model.MonitorMember" >
+  <insert id="insertSelective" parameterType="org.hdu.back.model.MonitorMember" >
     <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
       SELECT LAST_INSERT_ID()
     </selectKey>
@@ -57,7 +57,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="org.hdu.model.MonitorMember" >
+  <update id="updateByPrimaryKeySelective" parameterType="org.hdu.back.model.MonitorMember" >
     update monitor_member
     <set >
       <if test="emailAddr != null" >
@@ -72,7 +72,7 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="org.hdu.model.MonitorMember" >
+  <update id="updateByPrimaryKey" parameterType="org.hdu.back.model.MonitorMember" >
     update monitor_member
     set email_addr = #{emailAddr,jdbcType=VARCHAR},
       name = #{name,jdbcType=VARCHAR},

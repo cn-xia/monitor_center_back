@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.hdu.back.mapper.WebPageDetailMapper" >
+  
+    <select id="getResult" resultType="Map">
+	    select
+	    	wpd.url,
+	    	wpd.domain,
+	    	wpd.title,
+	    	wpd.author,
+	    	wpd.keyword
+	    from
+	    	search_crawler.web_page_detail wpd
+	    where
+	    	<trim suffixOverrides="and">
+		    	<if test="domain != null">
+		    		wpd.domain=#{domain} and
+		    	</if>
+		        <if test="keyword1 != null">
+		      		wpd.title like concat('%', #{keyword1}, '%') and
+		      	</if>
+		      	<if test="keyword2 != null">
+		      		wpd.title like concat('%', #{keyword2}, '%') and
+		      	</if>
+			</trim>
+  	</select>
+  
+</mapper>

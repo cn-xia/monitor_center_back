@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="org.hdu.mapper.JobDailyMapper" >
-  <resultMap id="BaseResultMap" type="org.hdu.model.JobDaily" >
+<mapper namespace="org.hdu.back.mapper.JobDailyMapper" >
+  <resultMap id="BaseResultMap" type="org.hdu.back.model.JobDaily" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="job_id" property="jobId" jdbcType="INTEGER" />
     <result column="start_time" property="startTime" jdbcType="TIMESTAMP" />
@@ -27,7 +27,7 @@
     delete from job_daily
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="org.hdu.model.JobDaily" >
+  <insert id="insert" parameterType="org.hdu.back.model.JobDaily" >
     <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
       SELECT LAST_INSERT_ID()
     </selectKey>
@@ -40,7 +40,7 @@
       #{totalSold,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{jobInterval,jdbcType=INTEGER}
       )
   </insert>
-  <insert id="insertSelective" parameterType="org.hdu.model.JobDaily" >
+  <insert id="insertSelective" parameterType="org.hdu.back.model.JobDaily" >
     <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
       SELECT LAST_INSERT_ID()
     </selectKey>
@@ -104,7 +104,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="org.hdu.model.JobDaily" >
+  <update id="updateByPrimaryKeySelective" parameterType="org.hdu.back.model.JobDaily" >
     update job_daily
     <set >
       <if test="jobId != null" >
@@ -137,7 +137,7 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="org.hdu.model.JobDaily" >
+  <update id="updateByPrimaryKey" parameterType="org.hdu.back.model.JobDaily" >
     update job_daily
     set job_id = #{jobId,jdbcType=INTEGER},
       start_time = #{startTime,jdbcType=TIMESTAMP},
