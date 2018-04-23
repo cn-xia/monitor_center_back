@@ -18,43 +18,41 @@ public class MonitorExecute implements CrawlerBeginListener,CrawlerEndListener{
 
 	private static final Logger logger = LoggerFactory.getLogger(MonitorExecute.class);
 	
-	@Value("${crawler.monitor.active}")
-	private static boolean active;//是否启用监控
-	
-	@Value("${crawler.monitor.interval}")
-	public static int interval;//间隔时间
-	
-	@Value("${crawler.monitor.appkey}")
-	public static String appkey;
-	
-	public static int dailyId = -1;//本次任务对应的日志id	
-	
-	@Resource
-	private MonitorThread startThread;
 	@Resource 
 	private MonitorThread msgThread;
-	@Resource
-	private MonitorThread lastMsgThread;
-	@Resource
-	private MonitorThread dailyThread;
+	
+	@Value("${crawler.monitor.active}")
+	private boolean active;//是否启用监控
+	public static String appkey;//任务key
+	public static int interval;//间隔时间
+	public static int dailyId = -1;//本次任务对应的日志id	
 	
 	public static final AtomicLong saveCounter = new AtomicLong(0);
 	public static final AtomicLong counter = new AtomicLong(0);
 	public static final AtomicInteger fileCounter = new AtomicInteger(0);
 	public static final AtomicLong soldCounter = new AtomicLong(0);
 	
+	@Value("${crawler.monitor.appkey}")
+	public void setAppkey(String appkey){
+		MonitorExecute.appkey = appkey;
+	}
+	
+	@Value("${crawler.monitor.interval}")
+	public void setInterval(int interval){
+		MonitorExecute.interval = interval;
+	}
+	
 	@Override
 	public void crawlerBegin() {//爬虫开始时 开始调用监控 
 		if(!active){
 			return; //测试代码不启动监控
-		}	
-		//初始化
-		startThread.setState(0);
-		startThread.start();	
+		}		
 		//监控
-		msgThread.setState(1);
 		MonitorThread.flag = true;
-		msgThread.start();
+		if(!MonitorThread.isRunning){
+			MonitorThread.isRunning = true;
+			msgThread.start();
+		}
 		logger.info("---inspectorStart---");
 	}
 
@@ -64,13 +62,6 @@ public class MonitorExecute implements CrawlerBeginListener,CrawlerEndListener{
 			return; //测试代码不启动监控
 		}
 		MonitorThread.flag = false;//停止监控
-		//最后一次监控
-		lastMsgThread.setState(2);
-		lastMsgThread.start();
-		//日报
-		dailyThread.setState(3);
-		dailyThread.start();
-		logger.info("---call dailyInspector---");
 	}
 	
 	/*public void sendErrorMsg(String exceptionMsg){//发生异常时调用

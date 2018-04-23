@@ -49,23 +49,23 @@ public class BaiduSearchRsProcessor implements Processor{
     	String domain = page.getResponse().getRealUrl().getHost();
 		if(HduCrawler.domainList != null){ //限制域名
 			switch (HduCrawler.limitType) {
-			case "init": //限初始
-				
-				break;
-			case "all": //限全部
-				boolean isContains = false;
-				for(String dm : HduCrawler.domainList){
-					if(domain.equals(dm)){
-						isContains = true;
-						break;
+				case "init": //限初始
+					
+					break;
+				case "all": //限全部
+					boolean isContains = false;
+					for(String dm : HduCrawler.domainList){
+						if(domain.equals(dm)){
+							isContains = true;
+							break;
+						}
 					}
-				}
-				if(!isContains){
-					return;
-				}
-				break;
-			default:
-				break;
+					if(!isContains){
+						return;
+					}
+					break;
+				default:
+					break;
 			}
 		}
         if(realUrl.contains("http://www.baidu.com/s")){ //过滤再次链接到百度搜索的网页
@@ -185,6 +185,7 @@ public class BaiduSearchRsProcessor implements Processor{
 				webPageDetail.setViewNum(commentNum);
 			}
 			//爬取时间
+			System.out.println("保存关键字：" + webPageDetail.getKeyword());
 			webPageDetail.setCrawlTime(new Date());
 			webPageDetailMapper.insertSelective(webPageDetail);
 			MonitorExecute.saveCounter.getAndIncrement();
@@ -283,7 +284,6 @@ public class BaiduSearchRsProcessor implements Processor{
 			WebPageResource resource = new WebPageResource(srcUrl, (short)2, new Date(), videoUrl);
 			resourceLs.add(resource);
 		}
-
 		//插入数据库
 		if(!resourceLs.isEmpty()) {
 			webPageResourceMapper.batchInsert(resourceLs);

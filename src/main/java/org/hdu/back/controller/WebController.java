@@ -7,7 +7,10 @@ import org.hdu.back.mapper.JobMsgMapper;
 import org.hdu.back.mapper.WebPageDetailMapper;
 import org.hdu.back.model.JobDaily;
 import org.hdu.back.util.CmdUtil;
+import org.hdu.back.util.FileUtil;
 import org.hdu.crawler.crawler.HduCrawler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,6 +30,8 @@ import java.util.Map;
 @RestController
 @RequestMapping("/web")
 public class WebController extends BaseController{
+	
+	private static final Logger logger = LoggerFactory.getLogger(WebController.class);
 
     @Resource
     private JobInfoMapper jobInfoMapper;
@@ -45,17 +50,18 @@ public class WebController extends BaseController{
      */
     @RequestMapping("/startCrawl")
     public Map startCrawl(String keyword){
-        System.out.println("收到关键字爬虫请求");
-        if(StringUtils.isEmpty(keyword)){
+    	logger.info("收到关键字爬虫请求");
+    	return buildResult(CODE_BUSINESS_ERROR, "该接口暂时关闭");
+        /*if(StringUtils.isEmpty(keyword)){
             return buildResult(CODE_BUSINESS_ERROR, "关键字不能为空");
         }
-        System.out.println("关键字：" + keyword);
+        logger.info("关键字：" + keyword);
         String result = CmdUtil.execCmd("java -jar SearchCrawler-1.0-SNAPSHOT.jar", new File("./crawler"));
         if(result.contains("成功")){
             return buildResult(CODE_SUCCESS, result);
         }else {
             return buildResult(CODE_BUSINESS_ERROR, result);
-        }
+        }*/
     }
     
     /**
@@ -69,7 +75,7 @@ public class WebController extends BaseController{
      */
     @RequestMapping("/startSubCrawl")
     public Map startSubCrawl(MultipartFile subFile, final Integer depth, final Integer count, MultipartFile domainFile, final String limitType){
-        System.out.println("收到主题爬虫请求");
+    	logger.info("收到主题爬虫请求");
         if(HduCrawler.isStart){
         	return buildResult(CODE_BUSINESS_ERROR, "爬虫已启动，不能再次启动，请耐心等待爬虫完成");
         }
@@ -80,19 +86,25 @@ public class WebController extends BaseController{
     	final List<String> keywordList = new ArrayList<>();
     	final List<String> domainList = new ArrayList<>();
     	try {
-			BufferedReader subReader = new BufferedReader(new InputStreamReader(subFile.getInputStream()));
-			String subject = null;
-			if((subject=subReader.readLine()) != null){
-				keywordList.add(subject.trim());
+    		String subFileEncoding = FileUtil.getEncoding(subFile.getInputStream());
+    		logger.info("主题文件编码格式: " + subFileEncoding); 
+			BufferedReader subReader = new BufferedReader(new InputStreamReader(subFile.getInputStream(), subFileEncoding));
+			String keyword = null;
+			while((keyword=subReader.readLine()) != null){
+				keywordList.add(keyword.trim());
+				System.out.println("输入关键词：" + keyword.trim());
 			}
 			if(domainFile != null){
-				BufferedReader domainReader = new BufferedReader(new InputStreamReader(domainFile.getInputStream()));
+				String domainFileEncoding = FileUtil.getEncoding(domainFile.getInputStream());
+	    		logger.info("域名文件编码格式: " + domainFileEncoding); 
+				BufferedReader domainReader = new BufferedReader(new InputStreamReader(domainFile.getInputStream(), domainFileEncoding));
 				String domain = null;
-				if((domain=domainReader.readLine()) != null){
+				while((domain=domainReader.readLine()) != null){
 					domainList.add(domain.trim());
+					System.out.println("输入域名：" + domain.trim());
 				}
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
     	if(keywordList.isEmpty()){
@@ -115,7 +127,10 @@ public class WebController extends BaseController{
      */
     @RequestMapping("/stopSubCrawl")
     public Map stopSubCrawl(){
-    	hduCrawler.stop();
+    	logger.info("收到爬虫结束指令");
+    	if(HduCrawler.isStart){
+    		hduCrawler.stop();
+    	}
     	HduCrawler.isStart = false; //标记爬虫未启动
     	return buildResult(CODE_SUCCESS, "停止爬虫成功");
     }

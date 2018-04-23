@@ -52,9 +52,11 @@ public class HduCrawler extends BreadthCrawler implements ApplicationContextAwar
 	
 	private Map<String, CrawlerEndListener> crawlerEndListenerMap;
 	private Map<String, CrawlerBeginListener> crawlerbeginListenerMap;
-	
-	public static int count = -1;
+	/** 最大抓取总量 */
+	public static int count = 50000;
+	/** 域名列表 */
 	public static List<String> domainList = null;
+	/** 限制域名类型 */
 	public static String limitType = null;
 	/** 是否已启动爬虫 */
 	public static boolean isStart = false;
@@ -108,7 +110,10 @@ public class HduCrawler extends BreadthCrawler implements ApplicationContextAwar
 		}
 		logger.info("request end");
         notifyEndCrawler();
-        HduCrawler.isStart = true;
+        HduCrawler.isStart = false;
+        HduCrawler.count = 50000;
+        HduCrawler.domainList = null;
+        HduCrawler.limitType = null;
         logger.info("爬取总量：" + MonitorExecute.counter.get());
 		logger.info("入库总量：" + MonitorExecute.saveCounter.get());
         logger.info("crawler end" );

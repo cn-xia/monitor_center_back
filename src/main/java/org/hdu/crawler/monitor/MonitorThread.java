@@ -10,6 +10,7 @@ import org.hdu.back.mapper.JobMsgMapper;
 import org.hdu.back.model.JobDaily;
 import org.hdu.back.model.JobInfo;
 import org.hdu.back.model.JobMsg;
+import org.hdu.crawler.crawler.HduCrawler;
 import org.hdu.crawler.util.MonitorInfoUtil;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -19,8 +20,7 @@ import org.springframework.stereotype.Component;
 public class MonitorThread extends Thread{
 	
 	public static boolean flag ; //是否监控
-	
-	private int state = -1;
+	public static boolean isRunning = false;
 	
 	@Resource
 	private JobInfoMapper jobInfoMapper;
@@ -32,31 +32,15 @@ public class MonitorThread extends Thread{
 	public MonitorThread(){
 	}
 	
-	public void setState(int state){
-		this.state = state;
-	}
-	
 	@Override
 	public void run() {
-		switch(state){
-			case 0: //就绪
-				String result = startMonitor();
-				if("-1".equals(result)){
-					try {
-						Thread.sleep(2000);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					startMonitor(); //发生错误再次尝试请求
-				}
-				break;
-			case 1: //运行
-				while(flag){
+		while(true){
+			if(HduCrawler.isStart){ //爬虫程序启动则监控
+				startMonitor(); //监控开始
+				while(flag){ //监控
 					try {
 						Thread.sleep(MonitorExecute.interval*60*1000);
 					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 					if(!flag){
@@ -64,28 +48,27 @@ public class MonitorThread extends Thread{
 					}
 					sendMessage();
 				}
-				break;
-			case 2:
 				sendMessage(); //结束时最后一次调msg
-				break;
-			case 3: //结束
 				try {
 					Thread.sleep(2000);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				sendDaily();//日报接口
-				break;
-			case 4:
 				//MonitorRequester.sendException(monitorParam);//错误通知接口
+			}
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
 	//监控开始
 	public String startMonitor(){
 		//获取任务id
-        JobInfo jobInfo =jobInfoMapper.selectByAppkey(MonitorExecute.appkey);
+        JobInfo jobInfo = jobInfoMapper.selectByAppkey(MonitorExecute.appkey);
         int jobId = jobInfo.getJobId();
         //生成日报的初始记录
         JobDaily jobDaily = new JobDaily();
@@ -141,9 +124,6 @@ public class MonitorThread extends Thread{
 		if(MonitorExecute.dailyId == -1){
 	    	return "任务启动失败，未生成dailyId";
 	    }
-	    //获取任务id
-	    JobInfo jobInfo = jobInfoMapper.selectByAppkey(MonitorExecute.appkey);
-	    int jobId = jobInfo.getJobId();
 	    //更新日报信息
 	    JobDaily jobDaily = jobDailyMapper.selectByPrimaryKey(MonitorExecute.dailyId);
 	    //花费时间
