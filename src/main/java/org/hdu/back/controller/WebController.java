@@ -138,10 +138,11 @@ public class WebController extends BaseController{
     /**
      * 向前端返回监控状态信息
      * @param jobId 任务id,前端暂时写成1
+     * @return status(0未完成1已完成) nowDepth(当前层数) tableData(监控信息)
      */
     @RequestMapping("/getMsg")
     public Map getMsg(Integer jobId){
-        System.out.println("向前端返回监控状态信息");
+    	logger.info("向前端返回监控状态信息");
         if(jobId == null){
             return buildResult(CODE_BUSINESS_ERROR, "任务id不能为空");
         }
@@ -164,12 +165,27 @@ public class WebController extends BaseController{
 		}
     }
     
+    /**
+     * 向前端返回查询结果
+     * @param input1 输入1
+     * @param select1 选择类型1
+     * @param relation1 关系1
+     * @param input2 输入2
+     * @param select2 选择类型2
+     * @param relation2 关系2
+     * @param input3 输入3
+     * @param select3 选择类型3
+     * @return
+     */
     @RequestMapping("/getResult")
-    public Map getResult(String domain, Boolean relation1, String keyword1, String relation2, String keyword2){
-    	if(StringUtils.isEmpty(domain) && StringUtils.isEmpty(keyword1) && StringUtils.isEmpty(keyword2)){
-    		return buildResult(CODE_BUSINESS_ERROR, "搜索条件请至少选择一个");
-    	}
-    	List<Map> resultList = webPageDetailMapper.getResult(domain, relation1, keyword1, relation2, keyword2);
+    public Map getResult(String input1, String select1, String relation1, String input2, String select2, 
+    							String relation2, String input3, String select3){
+    	logger.info("向前端返回查询结果");
+    	if(StringUtils.isEmpty(input1) && StringUtils.isEmpty(input2) && StringUtils.isEmpty(input3)){
+    		return buildResult(CODE_BUSINESS_ERROR, "搜索条件请至少输入一个");
+    	}    	
+    	List<Map> resultList = webPageDetailMapper.getResult(input1, select1, relation1, input2, select2, 
+    																relation2, input3, select3);
     	return buildResult("resultList", resultList);
     }
 }
