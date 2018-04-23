@@ -6,9 +6,11 @@ import org.hdu.back.mapper.JobInfoMapper;
 import org.hdu.back.mapper.JobMsgMapper;
 import org.hdu.back.mapper.WebPageDetailMapper;
 import org.hdu.back.model.JobDaily;
+import org.hdu.back.model.JobInfo;
 import org.hdu.back.util.CmdUtil;
 import org.hdu.back.util.FileUtil;
 import org.hdu.crawler.crawler.HduCrawler;
+import org.hdu.crawler.monitor.MonitorExecute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
@@ -117,7 +119,6 @@ public class WebController extends BaseController{
 				hduCrawler.start(keywordList, depth, count, domainList, limitType);
 			}
 		}).start();
-    	HduCrawler.isStart = true; //标记爬虫已启动
     	return buildResult(CODE_SUCCESS, "启动爬虫成功");
     }
     
@@ -131,7 +132,6 @@ public class WebController extends BaseController{
     	if(HduCrawler.isStart){
     		hduCrawler.stop();
     	}
-    	HduCrawler.isStart = false; //标记爬虫未启动
     	return buildResult(CODE_SUCCESS, "停止爬虫成功");
     }
 
@@ -148,7 +148,9 @@ public class WebController extends BaseController{
         List<Map> jobMsgLs = jobMsgMapper.getJobMsg(jobId);
         if(jobMsgLs.isEmpty()){
         	return buildResult(CODE_BUSINESS_ERROR, "爬虫启动失败，数据库监控状态信息为空");
-        }else {
+        }else if(MonitorExecute.dailyId == (int)jobMsgLs.get(0).get("dailyId")) {
+        	return buildResult(CODE_BUSINESS_ERROR, "爬虫未启动");
+		}else {
             Map<String, Object> data = new HashMap<>();
             JobDaily jobDaily = jobDailyMapper.getLastDailyInfo(jobId);
             if(jobDaily.getEndTime() == null){
@@ -156,6 +158,7 @@ public class WebController extends BaseController{
             }else{
             	data.put("status", 1);
             }
+            data.put("nowDepth", HduCrawler.nowDepth);
             data.put("tableData", jobMsgLs);
             return buildResult(data);
 		}

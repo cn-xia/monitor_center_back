@@ -49,16 +49,16 @@ public class MonitorThread extends Thread{
 					sendMessage();
 				}
 				sendMessage(); //结束时最后一次调msg
-				try {
-					Thread.sleep(2000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
 				sendDaily();//日报接口
+				//重置变量
+				MonitorExecute.dailyId = -1;
+				MonitorExecute.counter.set(0);
+				MonitorExecute.saveCounter.set(0);
+				MonitorExecute.fileCounter.set(0);
 				//MonitorRequester.sendException(monitorParam);//错误通知接口
 			}
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(5000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

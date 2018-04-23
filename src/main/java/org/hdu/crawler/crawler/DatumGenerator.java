@@ -106,7 +106,7 @@ public class DatumGenerator {
 	}
 
 	/**
-	 * cctv视频地址接口
+	 * cctv视频地址接口，百度播放页处理
 	 * @param videoId 视频id
 	 * @param referer 引用页
 	 * @return
@@ -116,6 +116,21 @@ public class DatumGenerator {
 				.meta(ProcessorType.PROCESSOR_TYPE, ProcessorType.PROCESSOR_TYPE_PLAY_PAGE)
 				.meta("referer", referer)
 				.meta("videoId", videoId);
+	}
+
+	/**
+	 * cctv视频地址接口,百度结果处理器处理
+	 * @param videoId 视频id
+	 * @param referer 引用页
+	 * @param keyword 关键字
+	 * @return
+	 */
+	public CrawlDatum generateCCTVVideo(String videoId, String referer, String keyword) {
+		return new CrawlDatum(String.format(DatumConstants.CCTV_VIDEO_INTERFACE, videoId))
+				.meta(ProcessorType.PROCESSOR_TYPE, ProcessorType.PROCESSOR_TYPE_BAIDU_SEARCH_RS)
+				.meta("referer", referer)
+				.meta("videoId", videoId)
+				.meta("keyword", keyword);
 	}
 
 	/**

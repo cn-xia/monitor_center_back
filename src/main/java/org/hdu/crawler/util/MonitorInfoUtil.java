@@ -24,7 +24,7 @@ public class MonitorInfoUtil {
 	
 	private static boolean isLinux;
 	
-	private static final int CPUTIME = 100;
+	private static final int CPUTIME = 500;
 	
 	private static final int PERCENT = 100;
 	
@@ -51,7 +51,7 @@ public class MonitorInfoUtil {
 				long totalvirtualMemory = osmxb.getTotalSwapSpaceSize();
 				// 剩余的物理内存
 				long freePhysicalMemorySize = osmxb.getFreePhysicalMemorySize();
-				Double usage = (Double) (1 - freePhysicalMemorySize * 1.0 / totalvirtualMemory);
+				Double usage = 1 - freePhysicalMemorySize * 1.0 / totalvirtualMemory;
 				BigDecimal b1 = new BigDecimal(usage);
 				memUsage = b1.setScale(2, BigDecimal.ROUND_HALF_UP).floatValue();
 			} catch (Exception e) {
@@ -112,7 +112,7 @@ public class MonitorInfoUtil {
 				+ "//system32//wbem//wmic.exe process get Caption,CommandLine,KernelModeTime,ReadOperationCount,ThreadCount,UserModeTime,WriteOperationCount";
 				// 取进程信息
 				long[] c0 = readCpu(Runtime.getRuntime().exec(procCmd));//第一次读取CPU信息
-				Thread.sleep(CPUTIME);//睡500ms
+				Thread.sleep(CPUTIME);
 				long[] c1 = readCpu(Runtime.getRuntime().exec(procCmd));//第二次读取CPU信息
 				if (c0 != null && c1 != null) {
 					long idletime = c1[0] - c0[0];//空闲时间

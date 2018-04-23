@@ -26,11 +26,11 @@ public class MonitorExecute implements CrawlerBeginListener,CrawlerEndListener{
 	public static String appkey;//任务key
 	public static int interval;//间隔时间
 	public static int dailyId = -1;//本次任务对应的日志id	
-	
-	public static final AtomicLong saveCounter = new AtomicLong(0);
+
 	public static final AtomicLong counter = new AtomicLong(0);
+	public static final AtomicLong saveCounter = new AtomicLong(0);
 	public static final AtomicInteger fileCounter = new AtomicInteger(0);
-	public static final AtomicLong soldCounter = new AtomicLong(0);
+	//public static final AtomicLong soldCounter = new AtomicLong(0);
 	
 	@Value("${crawler.monitor.appkey}")
 	public void setAppkey(String appkey){
@@ -53,7 +53,7 @@ public class MonitorExecute implements CrawlerBeginListener,CrawlerEndListener{
 			MonitorThread.isRunning = true;
 			msgThread.start();
 		}
-		logger.info("---inspectorStart---");
+		logger.info("start monitor");
 	}
 
 	@Override
@@ -62,6 +62,7 @@ public class MonitorExecute implements CrawlerBeginListener,CrawlerEndListener{
 			return; //测试代码不启动监控
 		}
 		MonitorThread.flag = false;//停止监控
+		logger.info("end monitor");
 	}
 	
 	/*public void sendErrorMsg(String exceptionMsg){//发生异常时调用
@@ -71,7 +72,7 @@ public class MonitorExecute implements CrawlerBeginListener,CrawlerEndListener{
 		MonitorParam monitorParam = new MonitorParam(exceptionMsg);
 		MonitorThread mot = new MonitorThread(4,monitorParam);
 		mot.start();
-	}*/
+	}
 	
 	public static MonitorParam getMsgParam(){
 		String cpu = MonitorInfoUtil.getCpuMsg();
@@ -83,6 +84,6 @@ public class MonitorExecute implements CrawlerBeginListener,CrawlerEndListener{
 		Long totalCount = counter.get();
 		Long totalSales = soldCounter.get();
 		return new MonitorParam(totalCount,totalSales);
-	}
+	}*/
 	
 }

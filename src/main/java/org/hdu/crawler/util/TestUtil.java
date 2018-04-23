@@ -4,12 +4,15 @@ import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.File;
 import java.io.InputStreamReader;
+import java.net.URL;
 
 public class TestUtil {
 
     public static void main(String[] args) throws Exception {
-        String result = execCmd("java -version", null);
-        System.out.println(result);
+        URL url = new URL("http://www.baidu.com/s?pn=0");
+        System.out.println(url.getHost());
+        /*String result = execCmd("java -version", null);
+        System.out.println(result);*/
     }
 
     /**
