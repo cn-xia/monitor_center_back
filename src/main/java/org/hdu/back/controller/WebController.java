@@ -149,7 +149,7 @@ public class WebController extends BaseController{
         List<Map> jobMsgLs = jobMsgMapper.getJobMsg(jobId);
         if(jobMsgLs.isEmpty()){
         	return buildResult(CODE_BUSINESS_ERROR, "爬虫启动失败，数据库监控状态信息为空");
-        }else if(MonitorExecute.dailyId == (int)jobMsgLs.get(0).get("dailyId")) {
+        }else if(MonitorExecute.dailyId != (int)jobMsgLs.get(0).get("dailyId")) {
         	return buildResult(CODE_BUSINESS_ERROR, "爬虫未启动");
 		}else {
             Map<String, Object> data = new HashMap<>();

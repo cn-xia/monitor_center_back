@@ -67,6 +67,8 @@ public class HduCrawler extends BreadthCrawler implements ApplicationContextAwar
 	public static double threshold = 1;
 	/** 当前层数 */
 	public static int nowDepth = -1;
+/*	*//** 配置深度 *//*
+	private static int defaultDepth;*/
 	
 	public HduCrawler(@Value("${crawler.webcollector.crawlPath}") String crawlPath, @Value("${crawler.webcollector.autoParse}") boolean autoParse) {
 		super(crawlPath, autoParse);

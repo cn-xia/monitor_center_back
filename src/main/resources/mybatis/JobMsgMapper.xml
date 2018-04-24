@@ -24,6 +24,7 @@
         jm.inc_save_count incSaveCount,
         jm.cpu cpu,
         jm.ram ram,
+        jm.daily_id dailyId,
         date_format(jm.monitor_time, "%Y-%m-%d %H:%i:%s") monitorTime
       from
         job_info ji
