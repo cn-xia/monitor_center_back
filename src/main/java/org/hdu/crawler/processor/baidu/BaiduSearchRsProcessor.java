@@ -17,6 +17,7 @@ import org.hdu.back.mapper.WebPageResourceMapper;
 import org.hdu.back.model.WebPageDetail;
 import org.hdu.back.model.WebPageRelation;
 import org.hdu.back.model.WebPageResource;
+import org.hdu.back.util.AlgorithmUtil;
 import org.hdu.crawler.constants.DatumConstants;
 import org.hdu.crawler.crawler.DatumGenerator;
 import org.hdu.crawler.crawler.HduCrawler;
@@ -123,8 +124,12 @@ public class BaiduSearchRsProcessor implements Processor{
 		String title = page.select("title").first().text();
 		if(title.contains(page.meta("keyword"))){ //过滤与关键字不相关的网页
 			WebPageDetail webPageDetail = new WebPageDetail();
+			//网页地址md5，作为索引
+			String realUrl  = page.getResponse().getRealUrl().toString();
+			String realUrlMd5 = AlgorithmUtil.toMD5(realUrl);
+			webPageDetail.setUrlMd5(realUrlMd5);
 			//网页地址
-			webPageDetail.setUrl(page.getResponse().getRealUrl().toString());
+			webPageDetail.setUrl(realUrl);
 			//域名
 			webPageDetail.setDomain(page.getResponse().getRealUrl().getHost());
 			//标题
@@ -179,6 +184,20 @@ public class BaiduSearchRsProcessor implements Processor{
 			}
 			//关键字
 			webPageDetail.setKeyword(page.meta("keyword"));
+			//标签
+			String tags = null;
+			if(!page.select("[target=tags]").isEmpty()){
+				tags = page.select("[target=tags]").first().attr("content");
+			}else if(!page.select(".article_tags a").isEmpty()){
+				Elements ts = page.select(".article_tags a");
+				for(Element tag : ts){
+					tags = tags + tag.text() + ",";
+				}
+				tags = tags.substring(0, tags.length()-1);
+			}
+			if(tags != null) {
+				webPageDetail.setTags(tags);
+			}
 			//内容
 			String content = null;
 			if(!page.select("article").isEmpty()){

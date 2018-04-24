@@ -1,5 +1,7 @@
 package org.hdu.crawler.util;
 
+import org.hdu.back.util.AlgorithmUtil;
+
 import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.File;
@@ -9,8 +11,10 @@ import java.net.URL;
 public class TestUtil {
 
     public static void main(String[] args) throws Exception {
-        URL url = new URL("http://www.baidu.com/s?pn=0");
-        System.out.println(url.getHost());
+        String s = "http://xiyou.cctv.com/p-42741-1505a42d-5b57-11e5-9a9b-d43d7e062524-asc.html";
+        System.out.println(AlgorithmUtil.toMD5(s));
+       /* URL url = new URL("http://www.baidu.com/s?pn=0");
+        System.out.println(url.getHost());*/
         /*String result = execCmd("java -version", null);
         System.out.println(result);*/
     }

@@ -5,7 +5,7 @@ import java.security.MessageDigest;
 public class AlgorithmUtil {
 
     public static String toMD5(String s){
-        char hexDigits[]={'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
+        char hexDigits[]={'0','1','2','3','4','5','6','7','8','9','a','b','d','d','e','f'};
         try {
             byte[] btInput = s.getBytes("UTF-8");
             // 获得MD5摘要算法的 MessageDigest 对象

@@ -1,18 +1,27 @@
-CREATE TABLE `web_page_detail` (
-  `id` bigint(15) NOT NULL AUTO_INCREMENT,
-  `url` varchar(500) NOT NULL,
-  `domain` varchar(200) DEFAULT NULL,
-  `title` varchar(200) DEFAULT NULL,
-  `src` varchar(200) DEFAULT NULL,
-  `create_time` timestamp NULL DEFAULT NULL,
-  `author` varchar(200) DEFAULT NULL,
-  `keyword` varchar(200) DEFAULT NULL,
-  `content` mediumtext CHARACTER SET utf8mb4,
-  `html` mediumtext,
-  `view_num` int(10) DEFAULT NULL,
-  `comment_num` int(10) DEFAULT NULL,
-  `crawl_time` timestamp NULL DEFAULT NULL,
-  `update_time` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `url_UNIQUE` (`url`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='ÍøÒ³ÏêÇé±í'
+drop table if exists web_page_detail;
+
+/*==============================================================*/
+/* Table: web_page_detail                                       */
+/*==============================================================*/
+create table web_page_detail
+(
+   id                   bigint(15) not null,
+   url_md5              char(32),
+   url                  varchar(2000),
+   domain               varchar(200),
+   title                varchar(200),
+   src                  varchar(200),
+   create_time          timestamp,
+   author               varchar(200),
+   keyword              varchar(200),
+   tags                 varchar(200),
+   content              mediumtext,
+   html                 mediumtext,
+   view_num             int(10),
+   comment_num          int(10),
+   crawl_time           timestamp,
+   update_time          timestamp,
+   primary key (id)
+);
+
+alter table web_page_detail comment 'ç½‘é¡µè¯¦æƒ…è¡¨';

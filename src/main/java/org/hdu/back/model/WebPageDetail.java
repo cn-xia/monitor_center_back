@@ -5,6 +5,8 @@ import java.util.Date;
 public class WebPageDetail {
     private Long id;
 
+    private String urlMd5;
+
     private String url;
 
     private String domain;
@@ -18,6 +20,8 @@ public class WebPageDetail {
     private String author;
 
     private String keyword;
+
+    private String tags;
 
     private String content;
 
@@ -37,6 +41,14 @@ public class WebPageDetail {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getUrlMd5() {
+        return urlMd5;
+    }
+
+    public void setUrlMd5(String urlMd5) {
+        this.urlMd5 = urlMd5 == null ? null : urlMd5.trim();
     }
 
     public String getUrl() {
@@ -93,6 +105,14 @@ public class WebPageDetail {
 
     public void setKeyword(String keyword) {
         this.keyword = keyword == null ? null : keyword.trim();
+    }
+
+    public String getTags() {
+        return tags;
+    }
+
+    public void setTags(String tags) {
+        this.tags = tags == null ? null : tags.trim();
     }
 
     public String getContent() {
